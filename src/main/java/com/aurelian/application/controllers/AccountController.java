@@ -1,8 +1,6 @@
 package com.aurelian.application.controllers;
 
 import com.aurelian.application.entities.Account;
-import com.aurelian.application.entities.ExchangeRate;
-import com.aurelian.application.entities.ExchangeRatesResponse;
 import com.aurelian.application.exceptions.AccountNotFoundException;
 import com.aurelian.application.services.ExchangeRateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import com.aurelian.application.repositories.AccountRepository;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 

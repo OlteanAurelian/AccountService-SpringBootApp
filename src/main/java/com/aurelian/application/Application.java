@@ -16,7 +16,7 @@ import java.util.Date;
 
 @SpringBootApplication
 @EnableCaching
-//@EnableCircuitBreaker
+@EnableCircuitBreaker
 public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);

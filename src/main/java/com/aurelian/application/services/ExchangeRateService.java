@@ -15,16 +15,10 @@ public class ExchangeRateService {
     @Autowired
     private RestTemplate restTemplate;
 
-//    @HystrixCommand(fallbackMethod = "fallback")
+    @HystrixCommand(fallbackMethod = "fallback")
     @Cacheable("exchangeRate")
     public ExchangeRate getExchangeRateByCurrency(String currency) {
-        try {
-            System.out.println("Going to sleep for 5 seconds... to simulate backend call");
-            Thread.sleep(1000*3);
-        } catch (InterruptedException e) {
-            e.getMessage();
-        }
-
+        System.out.println("Going to the rates-ws for exchange rates for currency: " + currency);
         String url = "https://api.exchangeratesapi.io/latest";
 
         ExchangeRatesResponse response = restTemplate.getForObject(url, ExchangeRatesResponse.class);
@@ -33,7 +27,8 @@ public class ExchangeRateService {
         return new ExchangeRate(currency, Objects.requireNonNull(response).getRates().get(currency));
     }
 
-//    public ExchangeRate fallback(String currency, Throwable hystrixCommand){
-//        return new ExchangeRate(currency, 0);
-//    }
+    public ExchangeRate fallback(String currency, Throwable hystrixCommand){
+        System.out.println("Enter fallback for currency: " + currency);
+        return new ExchangeRate(currency, 1);
+    }
 }
