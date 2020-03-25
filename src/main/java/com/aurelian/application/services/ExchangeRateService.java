@@ -3,6 +3,7 @@ package com.aurelian.application.services;
 import com.aurelian.application.entities.ExchangeRate;
 import com.aurelian.application.entities.ExchangeRatesResponse;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -23,7 +24,8 @@ public class ExchangeRateService {
         this.restTemplate = restTemplate;
     }
 
-    @HystrixCommand(fallbackMethod = "fallback")
+    @HystrixCommand(fallbackMethod = "fallback",
+            commandProperties = {@HystrixProperty(name="execution.isolation.thread.timeoutInMilliseconds", value="5000")})
     @Cacheable("exchangeRate")
     public ExchangeRate getExchangeRateByCurrency(String currency) {
         log.info("Going to the rates-ws for exchange rates for currency {}", currency);
