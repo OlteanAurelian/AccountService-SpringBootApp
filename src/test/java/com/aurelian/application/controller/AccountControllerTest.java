@@ -78,6 +78,6 @@ public class AccountControllerTest {
         cacheService.evictAllCacheValues();
         exchangeRateService.getExchangeRateByCurrency("RON");
 
-        Mockito.verify(mockRestTemplate, Mockito.times(2)).getForObject(Mockito.any(String.class), any());
+        Mockito.verify(mockRestTemplate, Mockito.times(1)).getForObject(Mockito.any(String.class), any());
 	}
 }
