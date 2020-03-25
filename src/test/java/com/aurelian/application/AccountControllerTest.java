@@ -41,4 +41,9 @@ public class AccountControllerTest {
 	public void accountNotFound() throws Exception {
 		mockMvc.perform(get("/account/6")).andExpect(status().isNotFound());
 	}
+
+    @Test
+    public void accountFoundWithCachedRates() throws Exception {
+        mockMvc.perform(get("/account/2")).andExpect(status().is2xxSuccessful());
+    }
 }
