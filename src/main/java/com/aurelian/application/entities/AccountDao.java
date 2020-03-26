@@ -9,9 +9,9 @@ import java.util.Date;
 
 @Entity
 @Data
-@EqualsAndHashCode
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
 @ToString
 public class AccountDao {
     @Id

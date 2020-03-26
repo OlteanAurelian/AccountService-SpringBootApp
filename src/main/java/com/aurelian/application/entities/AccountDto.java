@@ -5,8 +5,8 @@ import lombok.*;
 import java.util.Date;
 
 @Data
-@EqualsAndHashCode
 @AllArgsConstructor
+@EqualsAndHashCode
 @ToString
 public class AccountDto {
     private String iban;

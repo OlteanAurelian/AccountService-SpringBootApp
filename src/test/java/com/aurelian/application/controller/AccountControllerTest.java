@@ -58,19 +58,21 @@ public class AccountControllerTest {
 
     @Test
     public void accountFoundWithCachedRates() throws Exception {
+        cacheService.evictAllCacheValues();
+
         RestTemplate mockRestTemplate = Mockito.mock(RestTemplate.class);
         exchangeRateService.setRestTemplate(mockRestTemplate);
 
         mockMvc.perform(get("/account/2")).andExpect(status().is2xxSuccessful());
-        cacheService.evictAllCacheValues();
-        exchangeRateService.getExchangeRateByCurrency("USD");
         exchangeRateService.getExchangeRateByCurrency("USD");
 
-        Mockito.verify(mockRestTemplate, Mockito.times(2)).getForObject(Mockito.any(String.class), any());
+        Mockito.verify(mockRestTemplate, Mockito.times(1)).getForObject(Mockito.any(String.class), any());
     }
 
     @Test
     public void accountFoundWithoutCachedRates() throws Exception {
+        cacheService.evictAllCacheValues();
+
         RestTemplate mockRestTemplate = Mockito.mock(RestTemplate.class);
 	    exchangeRateService.setRestTemplate(mockRestTemplate);
 
@@ -78,6 +80,6 @@ public class AccountControllerTest {
         cacheService.evictAllCacheValues();
         exchangeRateService.getExchangeRateByCurrency("RON");
 
-        Mockito.verify(mockRestTemplate, Mockito.times(1)).getForObject(Mockito.any(String.class), any());
+        Mockito.verify(mockRestTemplate, Mockito.times(2)).getForObject(Mockito.any(String.class), any());
 	}
 }

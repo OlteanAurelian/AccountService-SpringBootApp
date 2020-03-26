@@ -4,6 +4,8 @@ import com.aurelian.application.entities.ExchangeRate;
 import com.aurelian.application.entities.ExchangeRatesResponse;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -13,16 +15,12 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Objects;
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
 @Log4j2
 @Service
 public class ExchangeRateService {
     private RestTemplate restTemplate;
-
-    public ExchangeRateService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
 
     @HystrixCommand(fallbackMethod = "fallback",
             commandProperties = {@HystrixProperty(name="execution.isolation.thread.timeoutInMilliseconds", value="5000")})
