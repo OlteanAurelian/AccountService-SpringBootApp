@@ -42,6 +42,9 @@ public class AccountControllerIntegrationTest {
     @MockBean
     private AccountRepository accountRepository;
 
+    @MockBean
+    private RestTemplate restTemplate;
+
     private Date commonDate = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
 
     @Before
@@ -52,18 +55,17 @@ public class AccountControllerIntegrationTest {
         ExchangeRatesResponse exchangeRatesResponse = new ExchangeRatesResponse();
         exchangeRatesResponse.setRates(rates);
 
-        RestTemplate mockRestTemplate = Mockito.mock(RestTemplate.class);
         String url = "https://api.exchangeratesapi.io/latest";
 
-        Mockito.when(mockRestTemplate.getForObject(url, ExchangeRatesResponse.class)).thenReturn(exchangeRatesResponse);
-        exchangeRateService.setRestTemplate(mockRestTemplate);
+        Mockito.when(restTemplate.getForObject(url, ExchangeRatesResponse.class)).thenReturn(exchangeRatesResponse);
+        exchangeRateService.setRestTemplate(restTemplate);
 
         AccountDao accountDao = new AccountDao(10L,"RO00 RZBR 0000 0000 0000 0001", "RON", 10000L, commonDate);
         when(accountRepository.findById(10L)).thenReturn(Optional.of(accountDao));
     }
 
     @Test
-    public void accountFoundWithCachedRates() throws Exception {
+    public void integrationTestWithMockedRates() throws Exception {
         String expected = "AccountDto(iban=RO00 RZBR 0000 0000 0000 0001, currency=RON, balance=10000.0, lastUpdate=" + commonDate + ") --> balance amount in EUR: 2061.855670103093";
         MvcResult result = mockMvc.perform(get("/account/10")).andExpect(status().is2xxSuccessful()).andReturn();
         String received = result.getResponse().getContentAsString();
