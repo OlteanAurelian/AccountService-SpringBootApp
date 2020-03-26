@@ -42,6 +42,9 @@ public class AccountControllerTest {
 	@MockBean
 	private AccountRepository accountRepository;
 
+	@MockBean
+    private RestTemplate restTemplate;
+
 	@Before
 	public void init() {
 		AccountDao accountDao1 = new AccountDao(1L,"RO00 RZBR 0000 0000 0000 0001", "RON", 10000L, Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
@@ -49,7 +52,9 @@ public class AccountControllerTest {
 
         when(accountRepository.findById(1L)).thenReturn(Optional.of(accountDao1));
         when(accountRepository.findById(2L)).thenReturn(Optional.of(accountDao2));
-	}
+
+        exchangeRateService.setRestTemplate(restTemplate);
+    }
 
 	@Test
 	public void accountNotFound() throws Exception {
@@ -60,26 +65,20 @@ public class AccountControllerTest {
     public void accountFoundWithCachedRates() throws Exception {
         cacheService.evictAllCacheValues();
 
-        RestTemplate mockRestTemplate = Mockito.mock(RestTemplate.class);
-        exchangeRateService.setRestTemplate(mockRestTemplate);
-
         mockMvc.perform(get("/account/2")).andExpect(status().is2xxSuccessful());
         exchangeRateService.getExchangeRateByCurrency("USD");
 
-        Mockito.verify(mockRestTemplate, Mockito.times(1)).getForObject(Mockito.any(String.class), any());
+        Mockito.verify(restTemplate, Mockito.times(1)).getForObject(Mockito.any(String.class), any());
     }
 
     @Test
     public void accountFoundWithoutCachedRates() throws Exception {
         cacheService.evictAllCacheValues();
 
-        RestTemplate mockRestTemplate = Mockito.mock(RestTemplate.class);
-	    exchangeRateService.setRestTemplate(mockRestTemplate);
-
 	    mockMvc.perform(get("/account/1")).andExpect(status().is2xxSuccessful());
         cacheService.evictAllCacheValues();
         exchangeRateService.getExchangeRateByCurrency("RON");
 
-        Mockito.verify(mockRestTemplate, Mockito.times(2)).getForObject(Mockito.any(String.class), any());
+        Mockito.verify(restTemplate, Mockito.times(2)).getForObject(Mockito.any(String.class), any());
 	}
 }
